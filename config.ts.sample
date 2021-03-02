@@ -1,0 +1,23 @@
+interface BouOptions {
+  // Beebotte token
+  beebotteChannelToken: string
+
+  // Channel to subscribe.
+  beebotteChannel: string
+
+  // Resource to subscribe.
+  beebotteResource: string
+
+  // Endpoint for currently-in-room user list
+  endpoint: string
+}
+
+// settings for bou-responder
+const bouOptions: BouOptions = {
+  beebotteChannelToken: 'token_here',
+  beebotteChannel: 'channel_here',
+  beebotteResource: 'resource_here',
+  endpoint: 'http://endpoint.here:8000'
+}
+
+export { bouOptions }

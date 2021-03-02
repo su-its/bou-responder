@@ -1,0 +1,4 @@
+dist/
+*.pem
+config.ts
+node_modules/
