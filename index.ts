@@ -12,8 +12,9 @@ async function getCountOfUsers () : Promise<number | null> {
     if (!Array.isArray(obj)) {
       const status = resp.status
       console.error('[!] Unexpected response with status ' + status, obj)
+      return null
     }
-    return obj.count()
+    return obj.length
   } catch (e) {
     console.error('[!] Failed to get count', e)
   }
@@ -23,7 +24,7 @@ async function getCountOfUsers () : Promise<number | null> {
 async function setupResponse () : Promise<Message> {
   const reaction = new Message()
   const count = await getCountOfUsers()
-  if (count == null) {
+  if (count === null) {
     reaction.text = 'boushitsu status: *error* (Sorry, something went wrong.) :x:'
     reaction.footer = ':bow:_< Sorry_'
   } else {
@@ -50,7 +51,7 @@ class Message {
   postEphemeralTo (url: string) {
     const payload = {
       text: 'from boushitsu',
-      resonse_type: 'ephemeral',
+      response_type: 'ephemeral',
       blocks: [
         {
           type: 'section',
