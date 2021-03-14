@@ -9,12 +9,13 @@ async function getCountOfUsers () : Promise<number | null> {
     const resp = await fetch(bouOptions.endpoint + '/v1/users_in_room')
     const body = await resp.text()
     const obj = JSON.parse(body)
-    if (!Array.isArray(obj)) {
+    if (typeof obj !== 'object' || obj === null || !obj.data) {
       const status = resp.status
       console.error('[!] Unexpected response with status ' + status, obj)
       return null
     }
-    return obj.length
+    // return obj.length
+    return obj.data.length
   } catch (e) {
     console.error('[!] Failed to get count', e)
   }
