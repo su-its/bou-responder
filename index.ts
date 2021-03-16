@@ -113,7 +113,15 @@ function run () {
         console.error('[!] "granted" is undefined. Failed to subscribe.')
         process.exit(-1)
       }
-      const t = granted[0].topic.split('/')
+      
+      const g = granted[0]
+      if (!g.topic) {
+        // TODO: find why this occurs
+        console.error('[!] "topic" is undefined. Failed to subscribe.')
+        process.exit(-1)
+      }
+      
+      const t = g.topic.split('/')
       if (t.length === 2) {
         console.log('Subscribed to')
         console.log('- channel:', t[0])
