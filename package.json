@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "author": "",
+  "author": "IT_Solution_Room",
   "license": "MIT",
   "scripts": {
     "start": "tsc -p . && node dist/index.js"
