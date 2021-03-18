@@ -1,0 +1,57 @@
+@startuml AMS_MAP
+
+skinparam DefaultFontName メイリオ
+skinparam DefaultFontSize 22
+skinparam ArrowFontSize 18
+
+caption システム全体図
+
+node ITS室{
+    node カードタッチからDBまで {
+        file カードリーダー部{
+            interface 学生証
+            [カードリーダー]
+            [ブリッジ] #YellowGreen
+        }
+        node バックエンド {
+            [AMS_バックエンド] #Aqua
+            database MariaDB
+            card Speaker
+        }
+    }
+
+    node フロントエンド {
+        [AMS_フロントエンド] #plum
+        storage bou_responder #Thistle
+        note bottom: 本リポジトリは\nここになります
+        interface http
+    }
+}
+cloud インターネット {
+    [ITS_Slack]
+    queue bou_relay
+}
+
+' レイアウト調整
+ITS室 -[hidden]right-> インターネット
+MariaDB -[hidden]left-> Speaker
+[ITS_Slack] -[hidden]up-> bou_relay
+
+' カードリーダー&バックエンド部
+学生証 =^ [カードリーダー]: データ
+[カードリーダー] ==^ [ブリッジ]: データ
+[ブリッジ] ==^ [AMS_バックエンド]: JSON
+[AMS_バックエンド] ^==^ MariaDB: SQL
+[AMS_バックエンド] --^ Speaker: 通知音
+
+' フロンドエンド部
+[AMS_バックエンド] ^=[#blue]=^ [AMS_フロントエンド]: JSON
+[AMS_バックエンド] ^-[#green]-^ [bou_responder]: JSONまたは、アノテーション
+[AMS_フロントエンド] ^=[#blue]=^ http : リクエスト
+
+' インターネット部
+[bou_responder] -[#green]-^ [ITS_Slack]: 通知
+[ITS_Slack] -[#green]-^ [bou_relay]: イベント
+[bou_relay] -[#green]-^ [bou_responder]: イベント
+
+@enduml
