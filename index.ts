@@ -113,9 +113,9 @@ function run () {
         console.error('[!] "granted" is undefined. Failed to subscribe.')
         process.exit(-1)
       }
-      
+
       const g = granted[0]
-      if (!g.topic) {
+      if (!g?.topic) {
         // TODO: find why this occurs
         console.error('[!] "topic" is undefined. Failed to subscribe.')
         process.exit(-1)
