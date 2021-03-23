@@ -113,14 +113,18 @@ function run () {
         console.error('[!] "granted" is undefined. Failed to subscribe.')
         process.exit(-1)
       }
-      
+      if (!Array.isArray(granted) || granted.length === 0) {
+        console.error('[!] "granted" is not an array or it has no element. "granted":', granted)
+        process.exit(-1)
+      }
+
       const g = granted[0]
-      if (!g.topic) {
+      if (!g?.topic) {
         // TODO: find why this occurs
         console.error('[!] "topic" is undefined. Failed to subscribe.')
         process.exit(-1)
       }
-      
+
       const t = g.topic.split('/')
       if (t.length === 2) {
         console.log('Subscribed to')
