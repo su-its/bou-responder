@@ -8,7 +8,7 @@
 
 本リポジトリはこのような立ち位置になっています。
 
-![APIの立ち位置](docs/PJ_map/AMS_MAP.png)
+![APIの立ち位置](docs/AMS_MAP/AMS_MAP.png)
 
 ---
 
@@ -28,7 +28,7 @@
 
 ## バックエンド部
 
-[AMS_バックエンド](https://github.com/su-its/ams-backend-nodejs)
+[AMS_バックエンド](https://github.com/su-its/ams-backend)
 
 ---
 
