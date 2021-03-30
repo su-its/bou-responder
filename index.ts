@@ -1,10 +1,69 @@
 import https from 'https'
 import mqtt from 'mqtt'
 import fetch from 'node-fetch'
-import { bouOptions } from './config'
+import YAML from 'yaml'
 import { readFileSync } from 'fs'
+import { join } from 'path'
 
-async function getCountOfUsers () : Promise<number | null> {
+/**
+ * 設置ファイルのパス
+ */
+const CONFIG_FILE = join(process.cwd(), 'config.yml')
+
+/**
+ * bou-responderの動作に必要な設定項目を格納したインターフェース
+ */
+interface BouOptions {
+  /** Beebotte token */
+  beebotteChannelToken: string
+
+  /** Channel to subscribe. */
+  beebotteChannel: string
+
+  /** Resource to subscribe. */
+  beebotteResource: string
+
+  /** Endpoint for currently-in-room user list */
+  endpoint: string
+}
+
+function getBouOptionsFromConfigYaml (filePath: string): BouOptions | null {
+  try {
+    // yamlの読み込み
+    const loaded = YAML.parse(readFileSync(filePath, 'utf-8'))
+
+    // ES3, ES5をターゲットにしていると非厳格モード下では関数の宣言が禁止されているので関数式で書いた
+    /**
+     * 与えられた引数がBouOptionsインターフェースを実装しているかチェックするためのユーザー定義タイプガード
+     *
+     * @see 元ネタ {@link https://qiita.com/suin/items/0ce77f31cbaa14031288 TypeScript: interfaceにはinstanceofが使えないので、ユーザ定義タイプガードで対応する - Qiita}
+     * @see TypeScriptのドキュメント {@link https://www.typescriptlang.org/docs/handbook/2/narrowing.html#using-type-predicates TypeScript: Documentation - Narrowing}
+     * @param arg BouOptionsインターフェースを実装しているか確かめたいもの(オブジェクト)
+     * @returns
+     */
+    const implementsBouOptions = (arg: any): arg is BouOptions => {
+      return arg !== null &&
+        typeof arg === 'object' &&
+        typeof arg.beebotteChannelToken === 'string' &&
+        typeof arg.beebotteChannel === 'string' &&
+        typeof arg.beebotteResource === 'string' &&
+        typeof arg.endpoint === 'string'
+    }
+
+    // BouOptions interfaceとして適切かチェック
+    if (!implementsBouOptions(loaded.bouOptions)) {
+      console.error(`[!] The setting value is incorrect or insufficient. Check '${filePath}'.`)
+      return null
+    }
+    return loaded.bouOptions
+  } catch (err) {
+    // YAML.parse()のエラーをハンドリング
+    console.error('[!] Error:', err)
+    return null
+  }
+}
+
+async function getCountOfUsers (bouOptions: BouOptions) : Promise<number | null> {
   try {
     const resp = await fetch(bouOptions.endpoint + '/v1/users_in_room')
     const body = await resp.text()
@@ -22,9 +81,9 @@ async function getCountOfUsers () : Promise<number | null> {
   return null
 }
 
-async function setupResponse () : Promise<Message> {
+async function setupResponse (bouOptions: BouOptions) : Promise<Message> {
   const reaction = new Message()
-  const count = await getCountOfUsers()
+  const count = await getCountOfUsers(bouOptions)
   if (count === null) {
     reaction.text = 'boushitsu status: *error* (Sorry, something went wrong.) :x:'
     reaction.footer = ':bow:_< Sorry_'
@@ -86,6 +145,11 @@ class Message {
 }
 
 function run () {
+  const bouOptions = getBouOptionsFromConfigYaml(CONFIG_FILE)
+  if (!bouOptions) {
+    console.error('Some error occured while reading config file')
+    process.exit(1)
+  }
   /**
    * ref1. https://github.com/beebotte/bbt_node/blob/master/lib/stream.js
    * ref2. https://github.com/beebotte/bbt_node/blob/master/lib/mqtt.js
@@ -136,7 +200,7 @@ function run () {
       const receivedMessage = JSON.parse(message.toString())
 
       /* Set up response message */
-      const reaction = await setupResponse()
+      const reaction = await setupResponse(bouOptions)
       /**
        * ref. https://api.slack.com/interactivity/slash-commands
        */
