@@ -1,0 +1,13 @@
+---
+bouOptions:
+  # Beebotte token
+  beebotteChannelToken: ''
+
+  # Channel to subscribe
+  beebotteChannel: ''
+
+  # Resource to subscribe
+  beebotteResource: ''
+
+  # API endpoint
+  endpoint: http://localhost:3000
