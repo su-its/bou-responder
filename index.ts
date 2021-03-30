@@ -65,9 +65,9 @@ function getBouOptionsFromConfigYaml (filePath: string): BouOptions | null {
   }
 }
 
-async function getCountOfUsers (bouOptions: BouOptions) : Promise<number | null> {
+async function getCountOfUsers (endpoint: string) : Promise<number | null> {
   try {
-    const resp = await fetch(bouOptions.endpoint + '/v1/users_in_room')
+    const resp = await fetch(endpoint + '/v1/users_in_room')
     const body = await resp.text()
     const obj = JSON.parse(body)
     if (obj === null || typeof obj !== 'object' || !obj.data) {
@@ -83,9 +83,9 @@ async function getCountOfUsers (bouOptions: BouOptions) : Promise<number | null>
   return null
 }
 
-async function setupResponse (bouOptions: BouOptions) : Promise<Message> {
+async function setupResponse (endpoint: string) : Promise<Message> {
   const reaction = new Message()
-  const count = await getCountOfUsers(bouOptions)
+  const count = await getCountOfUsers(endpoint)
   if (count === null) {
     reaction.text = 'boushitsu status: *error* (Sorry, something went wrong.) :x:'
     reaction.footer = ':bow:_< Sorry_'
@@ -209,7 +209,7 @@ function run () {
       const receivedMessage = JSON.parse(message.toString())
 
       /* Set up response message */
-      const reaction = await setupResponse(bouOptions)
+      const reaction = await setupResponse(bouOptions.endpoint)
       /**
        * ref. https://api.slack.com/interactivity/slash-commands
        */
