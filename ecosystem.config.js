@@ -1,5 +1,5 @@
 module.exports = {
-  apps : [{
+  apps: [{
     name: 'bou-responder',
     script: 'npm',
     args: 'start',
@@ -8,4 +8,4 @@ module.exports = {
     log_date_format: 'YYYY-MM-DD HH:mm Z',
     merge_logs: true
   }]
-};
+}
