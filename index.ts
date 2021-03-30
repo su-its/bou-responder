@@ -23,7 +23,10 @@ interface BouOptions {
   /** Resource to subscribe */
   beebotteResource: string
 
-  /** Endpoint for currently-in-room user list */
+  /**
+   * Endpoint to get a list of users
+   * who are currently in the room
+   */
   endpoint: string
 }
 
@@ -32,7 +35,6 @@ function getBouOptionsFromConfigYaml (filePath: string): BouOptions | null {
     // yamlの読み込み
     const loaded = YAML.parse(readFileSync(filePath, 'utf-8'))
 
-    // ES3, ES5をターゲットにしていると非厳格モード下では関数の宣言が禁止されているので関数式で書いた
     /**
      * 与えられた引数がBouOptionsインターフェースを実装しているかチェックするためのユーザー定義タイプガード
      *
@@ -41,7 +43,7 @@ function getBouOptionsFromConfigYaml (filePath: string): BouOptions | null {
      * @param arg BouOptionsインターフェースを実装しているか確かめたいもの(オブジェクト)
      * @returns
      */
-    const implementsBouOptions = (arg: any): arg is BouOptions => {
+    function implementsBouOptions (arg: any): arg is BouOptions {
       return arg !== null &&
         typeof arg === 'object' &&
         typeof arg.beebotteChannelToken === 'string' &&
