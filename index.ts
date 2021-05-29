@@ -149,7 +149,7 @@ class Message {
 function run () {
   const bouOptions = getBouOptionsFromConfigYaml(CONFIG_FILE)
   if (!bouOptions) {
-    console.error('Some error occured while reading config file')
+    console.error('Error occurred while reading config file')
     // TODO 設定ファイルの不備で落ちたら再起動しても落ちるのは明白なので別ロジックにしたい
     process.exit(1)
   }
