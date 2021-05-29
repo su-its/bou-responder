@@ -158,7 +158,7 @@ function run () {
    * ref2. https://github.com/beebotte/bbt_node/blob/master/lib/mqtt.js
    */
   if (bouOptions.beebotteChannelToken.length === 0) {
-    console.error("[!] The token doesn't have positive length.")
+    console.error("[!] The length of the token is zero")
     // TODO 設定ファイルの不備で落ちたら再起動しても落ちるのは明白なので別ロジックにしたい
     // そもそもprocess.exit()を多用すべきではない
     process.exit(1)
