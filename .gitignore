@@ -1,4 +1,4 @@
 dist/
 *.pem
-config.ts
+config.yml
 node_modules/
