@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "mqtt": "^4.2.6",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "yaml": "^1.10.2"
   }
 }
